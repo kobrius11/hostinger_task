@@ -1,6 +1,7 @@
 from datetime import datetime
-import json
+from pprint import pprint
 import requests
+import json
 import time
 import os
 
@@ -18,6 +19,7 @@ def get_json(url: str, params: dict = None) -> list:
         data = {"status_code": response.status_code, 
                 "error_message": response.reason, 
                 "url": response.url}
+        pprint(data)
         return data
 
 def time_sleep(seconds: int) -> None:
@@ -43,37 +45,56 @@ def get_input(prompt: str, text: str = None, seconds: int = 3) -> int:
             print("\033[0;31;40m Error: ", e, "\033[0;0m")
             time_sleep(seconds)
             continue
-
         return user_input
     
-def write_to_json(data_select: str, data: list) -> str:
+def write_to_json(data_select: str, data: list, filename: str = None) -> str:
     """
-    writes to json, save file as data_select(users, posts, comments) + todays date
+    writes to json, save file as data_select(users, posts, comments, albums, photos, todos) + todays date
     """
-    filename = "{}-{:%Y-%m-%d_%H:%M:%S}.json".format(data_select, datetime.now())
-    with open(filename, "w") as file:
+    if filename == None:
+        filename = "{}-{:%Y-%m-%d_%H:%M:%S}".format(data_select, datetime.now())
+
+    with open(filename + ".json", "w") as file:
         file.write(json.dumps(data, indent=4))
     file.close()
-
     return filename
 
-def get_all_data(url: str) -> list:
+def get_all_data(url: str, wait_time: int = 90, times: int = 5, threading: bool = False) -> list:
     """
-    Get all data, as json files. creates new folder and stores all (get) data of API's all endpoints (I think so).
+    Get all data, as json files. creates new folder and stores all (get) data of API's all endpoints (I think so). \n
+    Calls api endpoints total six times
+    Threading support: if True will run as a thread
     """
-    folder_name = "./all_data-{:%Y-%m-%d_%H:%M:%S}".format(datetime.now())
-    os.mkdir(folder_name)
+    folder_name = "./all_data"
+    try:
+        os.mkdir(folder_name)
+    except Exception:
+        pass
     os.chdir(folder_name)
 
     data_select_list = ["users", "posts", "comments", "albums", "photos", "todos"]
     filenames = []
-
-    for data_select in data_select_list:
-        temp_url = url + data_select
-        data = get_json(temp_url)
-        filenames.append(write_to_json(data_select, data))
-
+    while times > 0:
+        for data_select in data_select_list:
+            temp_url = url + data_select
+            data = get_json(temp_url)
+            filenames.append(write_to_json(data_select, data, filename=data_select))
+        times -= 1
+        if threading:
+            time.sleep(wait_time)
+    os.chdir("..")
     return filenames
+
+def thread_func(data_select: str, data: list, wait_time: int = 90, repeat: int = 5) -> None:
+    """
+    takes write_to_json function and it interval and repeat variable. \n
+    repeat = -1, will reapeat forever.
+    """
+    while repeat > 0:
+        write_to_json(data_select, data)
+        time.sleep(wait_time)
+        repeat -= 1
+
 
 
 
