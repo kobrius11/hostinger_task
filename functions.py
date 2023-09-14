@@ -10,8 +10,8 @@ def get_json(url: str, params: dict = None) -> list:
     """
     Send get request to url, using requests.get()
     """
-
     response = requests.get(url, params)
+
     # if succesful get json, else, return status_code, reason, url.
     if response.status_code == 200:
         return response.json()

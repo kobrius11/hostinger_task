@@ -117,7 +117,6 @@ def main(url: str, params: dict, threads: bool = False):
                 Run threading: {}
                 Running threads: {}
 
-
             Select param to set:
                 1 - set userId 
                 2 - set postId
