@@ -1,18 +1,93 @@
-import requests
+import functions
+import os
 from pprint import pprint
 
 #   global variables
-url = "https://jsonplaceholder.typicode.com/comments"
-params = {'userId': 1, 'postId': 1}
+url = "https://jsonplaceholder.typicode.com/"
+params = {}
 
-#   connect to the API
-response = requests.get(url=url, params=params)
+
 
 #   where magic happens
-if response.status_code == 200:
-    data = response.json()
-    pprint(data)
-else:
-    print(response.status_code)
 
+
+# If this file is called in terminal
+if __name__ == "__main__":
+    while True:
+        os.system("clear")
+
+        main_text = """
+        current url: {}
+        params: {}
+
+        Welcome to jsonplaceholder API browser v0.01
+              1 - destination 
+              2 - get data
+              0 - exit
+        """.format(url, params)
+
+        func_select = functions.get_input("What do you want to select? ", main_text, seconds=3)
+
+        if func_select == 1:
+            os.system("clear")
+
+            text1 = """
+            current url: {}
+            params: {}
+
+            You selected destination:
+                1 - users 
+                2 - posts: need to set userId
+                3 - comments: need to set postId and userId
+                0 - go back
+            """.format(url, params)
+
+            input_select = functions.get_input("What do you want to select? ", text1)
+
+            if input_select == 1:
+                data_select = "users"
+                url = f"https://jsonplaceholder.typicode.com/{data_select}"
+            
+            elif input_select == 2:
+                data_select = "posts"
+                url = f"https://jsonplaceholder.typicode.com/{data_select}"
+                userId = functions.get_input("Enter userId: ")
+                params["userId"] = userId
+
+            elif input_select == 3:
+                data_select = "comments"
+                url = f"https://jsonplaceholder.typicode.com/{data_select}"
+                userId = functions.get_input("Enter userId: ")
+                params["userId"] = userId
+                postId = functions.get_input("Enter postId: ")
+                params["postId"]= postId
+
+            elif input_select == 0:
+                continue
+
+        elif func_select == 2:
+            data = functions.get_json(url, params)
+            
+            url = "https://jsonplaceholder.typicode.com/"
+            params = {}
+            choise = functions.get_input("save to a file or print (1-yes/ any number key -print) ?: ")
+
+            if choise == 1:
+                functions.write_to_json(data_select, data)
+                continue
+            else:
+                pprint(data)
+                
+                input("Press any key to continue")
+                continue
+
+
+
+
+        elif func_select == 0:
+            print("Have a wonderful day!")
+            break
+
+        else:
+            print("Invalid input!")
 
