@@ -2,19 +2,29 @@ import functions
 import os
 from pprint import pprint
 
+#   TODO:
+#       explain functions.py, main.py
+#       create functionality to get all posts, comments without userId
+#       implement PyTest
+#       create a function that send request every 90seconds
+#       
+#       optional create gui using PySimpleGui 
+#       
+
 #   global variables
 url = "https://jsonplaceholder.typicode.com/"
 params = {}
 
-
-
-#   where magic happens
-
-
 # If this file is called in terminal
 if __name__ == "__main__":
+    
+    # Python terminal meniu,  
     while True:
         os.system("clear")
+
+        # Main menu you select two menus from here:
+        #   1-destination meniu: designed to manipulate the url and params 
+        #   2-get data meniu: you can choose either print, or write to json file the data
 
         main_text = """
         current url: {}
@@ -28,9 +38,13 @@ if __name__ == "__main__":
 
         func_select = functions.get_input("What do you want to select? ", main_text, seconds=3)
 
+        #   Destination meniu
         if func_select == 1:
             os.system("clear")
 
+            #   Users will print all users avaivable in API.
+            #   Posts will ask for userId and print all the posts that user has written.
+            #   Comments will ask for userId, postId and print all the comments that user have writen on particular post.
             text1 = """
             current url: {}
             params: {}
@@ -64,7 +78,8 @@ if __name__ == "__main__":
 
             elif input_select == 0:
                 continue
-
+        
+        #   Data meniu
         elif func_select == 2:
             data = functions.get_json(url, params)
             
@@ -81,10 +96,8 @@ if __name__ == "__main__":
                 input("Press any key to continue")
                 continue
 
-
-
-
         elif func_select == 0:
+            os.system("clear")
             print("Have a wonderful day!")
             break
 

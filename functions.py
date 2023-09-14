@@ -45,7 +45,10 @@ def get_input(prompt: str, text: str = None, seconds: int = 3) -> int:
 
         return user_input
     
-def write_to_json(data_select: str, data: list):
+def write_to_json(data_select: str, data: list) -> None:
+    """
+    writes to json
+    """
     with open(f"{data_select}-{datetime.now()}.json", "w") as file:
         for element in data:
             file.write(json.dumps(element))
