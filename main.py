@@ -9,6 +9,7 @@ import os
 #       create functionality to get all posts, comments without userId - Done
 #       implement PyTest
 #       implement logger
+#       README.md
 #       create a function that send request every 90seconds - Done
 #       
 #       optional create gui using PySimpleGui 
@@ -26,9 +27,11 @@ def main(url: str, params: dict, threads: bool = False):
         os.system("clear")
 
         # Main menu you select two menus from here:
-        #   1-destination meniu: designed to manipulate the url and params 
-        #   2-set url parameters
-        #   3-get data meniu: you can choose either print, or write to json file the data
+        #   1- set destination meniu: designed to manipulate the url and params.
+        #   2- set url parameters.
+        #   3- get data meniu: you can choose either print, or write to json file the data, write function supports threading.
+        #   4- Run get_all_data(), supports threading.
+        #   5- set threading bool, to make funtions run as threads(in the backround).
         main_text = """
         Currently selected:
             Url: {}
