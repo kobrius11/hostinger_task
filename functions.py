@@ -27,15 +27,6 @@ def get_json(url: str, params: dict = None) -> list:
         pprint(data)
         return data
 
-def send_post(url):
-    data = {
-        "userId": get_input("Enter user id: "),
-        "title": input("enter post title: "),
-        "body": input("enter post body: ")
-    }
-    response = requests.post(url, data)
-    return response
-
 def time_sleep(seconds: int) -> None:
     """
     time.sleep() function, wich prints remaining time.
