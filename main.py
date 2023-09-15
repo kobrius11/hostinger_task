@@ -13,8 +13,6 @@ import os
 #       README.md
 #       create a function that send request every 90seconds - Done
 #       
-#       optional create gui using PySimpleGui 
-#       
 
 #   global variables
 url = "https://jsonplaceholder.typicode.com/"
@@ -23,14 +21,14 @@ params = {}
 def main(url: str, params: dict, threads: bool = False):
     const_url = "https://jsonplaceholder.typicode.com/"
     while True:
-        running_threads = {thread.name for thread in threading.enumerate()}
+        running_threads = [thread.name for thread in threading.enumerate() if thread.name != "MainThread"]
         
         os.system("clear")
 
         # Main menu you select two menus from here:
         #   1- set destination meniu: designed to manipulate the url and params.
         #   2- set url parameters.
-        #   3- get data meniu: you can choose either print, or write to json file the data, write function supports threading.
+        #   3- get data meniu: you can choose either print, or write to json file the data, only write function supports threading.
         #   4- Run get_all_data(), supports threading.
         #   5- set threading bool, to make funtions run as threads(in the backround).
         main_text = """
@@ -40,7 +38,7 @@ def main(url: str, params: dict, threads: bool = False):
             Run threading: {}
             Running threads: {}
 
-        Welcome to jsonplaceholder API browser v0.03
+        Welcome to jsonplaceholder API browser v0.05
               1 - set destination
               2 - set params
               3 - get data
@@ -61,7 +59,7 @@ def main(url: str, params: dict, threads: bool = False):
         if func_select == 1:
             logger.info(f"Main menu ({func_select}): entering destination menu")
             os.system("clear")
-
+            data_select = ""
             set_destination_text = """
             Currently selected:
                 Url: {}
@@ -71,11 +69,11 @@ def main(url: str, params: dict, threads: bool = False):
 
             Select destination:
                 1 - users
-                2 - posts   : params that can be set: userId
-                3 - comments: params that can be set: postId and userId
-                4 - albums
-                5 - photos  : params that can be set: albumId
-                6 - todos   : params that can be set: userId
+                2 - posts       :params that can be set: userId
+                3 - comments    :params that can be set: postId and userId
+                4 - albums      :params that can be set: userId
+                5 - photos      :params that can be set: albumId
+                6 - todos       :params that can be set: userId
 
                 0 - go back
             """.format(url, params, threads, running_threads)
@@ -171,7 +169,7 @@ def main(url: str, params: dict, threads: bool = False):
                 logger.info(f"Params menu ({input_select}): going back to main menu")
                 continue
 
-        #   Get data meniu
+        #   Get data menu
         elif func_select == 3:
             logger.info(f"Main menu ({func_select}): entering data menu")
             #   Error handle if no data provided
@@ -192,7 +190,6 @@ def main(url: str, params: dict, threads: bool = False):
             Select data to get:
                 1 - get json file 
                 2 - print to console
-                3 - get all data
                 
                 0 - go back
             """.format(url, params, threads, running_threads)
@@ -230,14 +227,14 @@ def main(url: str, params: dict, threads: bool = False):
         #   Get all data
         elif func_select == 4:
                 if threads == True:
-                    thread = threading.Thread(target=functions.get_all_data, args=(const_url), kwargs={"threading": True}, name="all_data")
+                    thread = threading.Thread(target=functions.get_all_data, args=(const_url, True), name="all_data")
                     thread.start()
                     logger.info(f"Main menu ({func_select}): new thread added {thread.name}")
                     continue
                 else:
-                    functions.get_all_data(const_url)
+                    functions.get_all_data(const_url, False)
                     continue
- 
+
         #   Set Run threading
         elif func_select == 5:
             if threads == False:

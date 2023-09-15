@@ -27,6 +27,15 @@ def get_json(url: str, params: dict = None) -> list:
         pprint(data)
         return data
 
+def send_post(url):
+    data = {
+        "userId": get_input("Enter user id: "),
+        "title": input("enter post title: "),
+        "body": input("enter post body: ")
+    }
+    response = requests.post(url, data)
+    return response
+
 def time_sleep(seconds: int) -> None:
     """
     time.sleep() function, wich prints remaining time.
@@ -53,42 +62,49 @@ def get_input(prompt: str, text: str = None, seconds: int = 3) -> int:
             continue
         logger.info(f"get_input: exiting program {user_input}")
         return user_input
+
+def create_folder(folder_name: str) -> str:
+    """
+    Create's a folder in ./ , if folder exists handles exception.
+    """
+    try:
+        logger.info(f"create_folder: attempt to create folder {folder_name}")
+        os.mkdir(folder_name)
+    except Exception as e:
+        logger.error(f"create_folder error: folder {folder_name} failed to create {e}")
+        pass
+
+    return folder_name
     
-def write_to_json(data_select: str, data: list, filename: str = None) -> str:
+def write_to_json(data_select: str, data: list, filename: str = None, folder_name: str = "./data") -> str:
     """
     writes to json, save file as data_select(users, posts, comments, albums, photos, todos) + todays date
     """
     logger.info(f"write_to_json: started running, data selected {data_select}")
     if filename == None:
         filename = "{}-{:%Y-%m-%d_%H:%M:%S}".format(data_select, datetime.now())
-
-    with open(filename + ".json", "w") as file:
+    create_folder(folder_name)
+    
+    with open(folder_name + "/" + filename + ".json", "w") as file:
         file.write(json.dumps(data, indent=4))
     file.close()
     logger.info(f"write_to_json: exiting function, filename {filename}  data selected {data_select}")
     return filename
 
-def get_all_data(url: str, wait_time: int = 90, repeat: int = 5, threading: bool = False) -> list:
+def get_all_data(url: str, threading: bool, wait_time: int = 90, repeat: int = 5) -> list:
     """
     Get all data, as json files. creates new folder and stores all (get) data of API's all endpoints (I think so). \n
     Calls api endpoints total six times
     Threading support: if True will run as a thread
+    repeat: -1 will run forever
     """
     
     logger.info(f"get_all_data: started running, repeat {repeat} wait_time {wait_time} threading {threading}")
-    folder_name = "./all_data"
-    try:
-        logger.info(f"get_all_data: attempt to create folder {folder_name}")
-        os.mkdir(folder_name)
-    except Exception as e:
-        logger.error(f"get_all_data error: folder {folder_name} failed to create {e}")
-        pass
-    os.chdir(folder_name)
 
     data_select_list = ["users", "posts", "comments", "albums", "photos", "todos"]
     filenames = []
     if threading:
-        while repeat > 0:
+        while repeat != 0:
             for data_select in data_select_list:
                 logger.info(f"get_all_data: data selected {data_select}")
                 temp_url = url + data_select
@@ -97,7 +113,7 @@ def get_all_data(url: str, wait_time: int = 90, repeat: int = 5, threading: bool
                 except Exception as e:
                     logger.critical(f"get_all_data error: fatal {e}")
                     return
-                filenames.append(write_to_json(data_select, data, filename=data_select))
+                filenames.append(write_to_json(data_select, data, filename=data_select, folder_name="./all_data"))
                 
             repeat -= 1
             time.sleep(wait_time)
@@ -110,9 +126,9 @@ def get_all_data(url: str, wait_time: int = 90, repeat: int = 5, threading: bool
             except Exception as e:
                 logger.critical(f"get_all_data error: fatal {e}")
                 return
-            filenames.append(write_to_json(data_select, data, filename=data_select))
-    os.chdir("..")
+            filenames.append(write_to_json(data_select, data, filename=data_select, folder_name="./all_data"))
     logger.info(f"get_all_data: exiting function, return {filenames}")
+    
     return filenames
 
 def thread_func(data_select: str, data: list, wait_time: int = 90, repeat: int = 5) -> None:
@@ -121,14 +137,12 @@ def thread_func(data_select: str, data: list, wait_time: int = 90, repeat: int =
     repeat = -1, will reapeat forever.
     """
     logger.info(f"thread_func: started running collecting {data_select} data, repeat {repeat}")
-    while repeat > 0:
+    while repeat != 0:
         write_to_json(data_select, data)
         time.sleep(wait_time)
         repeat -= 1
         logger.info(f"thread_func: {repeat} reapeats left")
     logger.info(f"thread_func: exited collecting {data_select}")
-
-
 
 
 
