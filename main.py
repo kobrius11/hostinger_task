@@ -70,7 +70,7 @@ def main(url: str, params: dict, threads: bool = False):
             Select destination:
                 1 - users
                 2 - posts       :params that can be set: userId
-                3 - comments    :params that can be set: postId and userId
+                3 - comments    :params that can be set: postId
                 4 - albums      :params that can be set: userId
                 5 - photos      :params that can be set: albumId
                 6 - todos       :params that can be set: userId
@@ -111,7 +111,11 @@ def main(url: str, params: dict, threads: bool = False):
             
             #   If data_select was selected(exist), set url approatly
             if data_select:
-                url = f"https://jsonplaceholder.typicode.com/{data_select}"
+                id = functions.get_input(f"set {data_select} id (0 for no id): ")
+                if id == 0:
+                    url = f"https://jsonplaceholder.typicode.com/{data_select}"
+                else:
+                    url = f"https://jsonplaceholder.typicode.com/{data_select}/{id}"
 
             #   Go back to main menu
             elif input_select == 0:
