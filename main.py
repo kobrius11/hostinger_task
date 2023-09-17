@@ -110,8 +110,8 @@ def main(url: str, params: dict, threads: bool = False):
             
             #   If data_select was selected(exist), set url approatly
             if data_select:
-                id = functions.get_input(f"set {data_select} id (0 for no id): ")
-                if id == 0:
+                id = functions.get_input(f"set {data_select} id (0 or negative number, for no id): ")
+                if id <= 0:
                     url = f"https://jsonplaceholder.typicode.com/{data_select}"
                 else:
                     url = f"https://jsonplaceholder.typicode.com/{data_select}/{id}"
