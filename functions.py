@@ -70,6 +70,11 @@ def create_folder(folder_name: str) -> str:
 def write_to_json(data_select: str, data: list, filename: str = None, folder_name: str = "./data") -> str:
     """
     writes to json, save file as data_select(users, posts, comments, albums, photos, todos) + todays date
+    data_select: (users, posts, comments, albums, photos, todos).
+    data: json formated into dict or list of dicts.
+    filename: specific name you want your file to be.
+    folder_name: specific name you want your folder to be.
+
     """
     logger.info(f"write_to_json: started running, data selected {data_select}")
     if filename == None:
@@ -82,13 +87,31 @@ def write_to_json(data_select: str, data: list, filename: str = None, folder_nam
     logger.info(f"write_to_json: exiting function, filename {filename}  data selected {data_select}")
     return filename
 
-def get_all_data(url: str, threading: bool, wait_time: int = 90, repeat: int = 5) -> list:
+def write_to_json_repeated(data_select: str, data: list, wait_time: int = 90, repeat: int = -1) -> None:
+    """
+    takes write_to_json function and reapeats it (repeat :arg:) of times, with 90 seconds or (wait_time :arg:) pause periods. \n
+    data_select: (users, posts, comments, albums, photos, todos).
+    data: json formated into dict or list of dicts.
+    repeat = -1, will reapeat forever.
+    wait_time = period of seconds between function calls
+    """
+    logger.info(f"thread_func: started running collecting {data_select} data, repeat {repeat}")
+    while repeat != 0:
+        write_to_json(data_select, data)
+        time.sleep(wait_time)
+        repeat -= 1
+        logger.info(f"thread_func: {repeat} reapeats left")
+    logger.info(f"thread_func: exited collecting {data_select}")
+
+def get_all_data(threading: bool, wait_time: int = 90, repeat: int = -1) -> list:
     """
     Get all data, as json files. creates new folder and stores all (get) data of API's all endpoints (I think so). \n
     Calls api endpoints total six times
     Threading support: if True will run as a thread
     repeat: -1 will run forever
+    wait_time:  period of seconds between function calls
     """
+    url = "https://jsonplaceholder.typicode.com/"
     
     logger.info(f"get_all_data: started running, repeat {repeat} wait_time {wait_time} threading {threading}")
 
@@ -121,20 +144,6 @@ def get_all_data(url: str, threading: bool, wait_time: int = 90, repeat: int = 5
     logger.info(f"get_all_data: exiting function, return {filenames}")
     
     return filenames
-
-def thread_func(data_select: str, data: list, wait_time: int = 90, repeat: int = 5) -> None:
-    """
-    takes write_to_json function and it interval and repeat variable. \n
-    repeat = -1, will reapeat forever.
-    """
-    logger.info(f"thread_func: started running collecting {data_select} data, repeat {repeat}")
-    while repeat != 0:
-        write_to_json(data_select, data)
-        time.sleep(wait_time)
-        repeat -= 1
-        logger.info(f"thread_func: {repeat} reapeats left")
-    logger.info(f"thread_func: exited collecting {data_select}")
-
 
 
 

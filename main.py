@@ -8,9 +8,9 @@ import os
 #   TODO:
 #       explain functions.py, main.py - Done
 #       create functionality to get all posts, comments without userId - Done
-#       implement PyTest 
+#       implement PyTest - Done
 #       implement logger - Done 
-#       README.md
+#       README.md - Done
 #       create a function that send request every 90seconds - Done
 #       
 
@@ -19,7 +19,6 @@ url = "https://jsonplaceholder.typicode.com/"
 params = {}
 
 def main(url: str, params: dict, threads: bool = False):
-    const_url = "https://jsonplaceholder.typicode.com/"
     while True:
         running_threads = [thread.name for thread in threading.enumerate() if thread.name != "MainThread"]
         
@@ -203,7 +202,7 @@ def main(url: str, params: dict, threads: bool = False):
             #   write data to file
             if input_select == 1:
                 if threads == True:
-                    thread = threading.Thread(target=functions.thread_func, args=(data_select, data,), name=data_select)
+                    thread = threading.Thread(target=functions.write_to_json_repeated, args=(data_select, data,), name=data_select)
                     thread.start()
                     logger.info(f"Data menu ({input_select}): new thread added {thread.name}")
                     continue
@@ -231,12 +230,12 @@ def main(url: str, params: dict, threads: bool = False):
         #   Get all data
         elif func_select == 4:
                 if threads == True:
-                    thread = threading.Thread(target=functions.get_all_data, args=(const_url, True), name="all_data")
+                    thread = threading.Thread(target=functions.get_all_data, args=(True), name="all_data")
                     thread.start()
                     logger.info(f"Main menu ({func_select}): new thread added {thread.name}")
                     continue
                 else:
-                    functions.get_all_data(const_url, False)
+                    functions.get_all_data(False)
                     continue
 
         #   Set Run threading

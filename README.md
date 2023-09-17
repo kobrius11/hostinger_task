@@ -1,10 +1,11 @@
 # hostinger_task
 
 ### Set up 
+Program was written in WSL2 Ubuntu 22.04.2 LTS, Python 3.10.6
 1. Clone repository, 
-3. set up virtualenv, or venv 
-4. Download requirements
-5. run python3 main.py in console
+3. set up virtualenv, or venv  `python3 -m venv venv`
+4. Download requirements `pip install -r requirements.txt`
+5. run `python3 main.py` in console
 
 ### Overview
 Basically this program uses requests library to connect to an API, and either prints response, or writes it in a json file.
@@ -23,7 +24,7 @@ There are 6 destinations to chose from `users, posts, comments, albums, photos, 
 
 Once destination is choosen you can specify url parameters. 
 eg.: i want to get all posts by user which has id = 1: `https://jsonplaceholder.typicode.com/posts?userId=1`,
-i want to get all comments, on specific post(id=1), by specific user(id=1): `https://jsonplaceholder.typicode.com/comments?postId=1?userId=1`
+i want to get comment with id=1, by specific user(id=1): `https://jsonplaceholder.typicode.com/comments/1/?userId=1`
 Program tells its user which destination takes which url parameters.
 
 Once destination & parameters are set, user can get data, by using 3 option in the main menu, where user will be promped to enter how he wants data to be delivered 1-option creates a json file in `./data` directory, 2- option prints data to the console.
@@ -48,5 +49,12 @@ url = `https://jsonplaceholder.typicode.com/comments`
 params = {userId=3, albumId=4, postId=2}
 data will contain all comments where postId=2, `https://jsonplaceholder.typicode.com/comments/?postId=2`
 
+### What i would have done with more time.
+`Refactoring`: To improve code quality and maintainability, you could have continued refactoring the code. Focus on breaking down complex functions into smaller, more manageable ones, and adhere to coding standards and best practices.
 
+`Testing`: Expanding test coverage is essential for ensuring the reliability and robustness of your program. You might have written more unit tests, integration tests, and possibly even added automated testing frameworks to catch bugs early in the development process.
+
+`Web-Based Version`: If you were considering adapting the program into a web-based version using Django-REST, you could start by outlining the project requirements, designing the database schema, and creating API endpoints to interact with the application. This would involve setting up Django models, serializers, views, and URL routing.
+
+`Abstraction`: To make the program more abstract, you could identify common patterns and functionality and encapsulate them into reusable modules or classes. This would make the code more flexible and easier to maintain in the long run.
 
